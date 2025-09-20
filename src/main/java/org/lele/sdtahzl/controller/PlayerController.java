@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.*;
 public class PlayerController {
     @Autowired
     private PlayerService playerService;
-    @GetMapping("/history/game/record{summonerName}")
-    public Result<MatchHistoryVO> historyGameRecord(@PathVariable String summonerName) {
+
+    @PostMapping("/history/game/record")
+    public Result<MatchHistoryVO> historyGameRecord(@RequestParam String summonerName) {
         if (summonerName == null) {
             return Result.fail(ResultCode.PARAM_ERROR);
         }
