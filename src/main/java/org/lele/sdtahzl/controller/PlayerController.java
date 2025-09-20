@@ -16,11 +16,16 @@ public class PlayerController {
     private PlayerService playerService;
 
     @PostMapping("/history/game/record")
-    public Result<MatchHistoryVO> historyGameRecord(@RequestParam String summonerName) {
-        if (summonerName == null) {
+    public Result<MatchHistoryVO> historyGameRecord(@RequestParam String gameName, String tagLine) {
+        if (gameName == null || tagLine == null) {
             return Result.fail(ResultCode.PARAM_ERROR);
         }
-        MatchHistoryVO matchHistoryVO = playerService.historyGameRecord(summonerName);
+        MatchHistoryVO matchHistoryVO = playerService.historyGameRecord(gameName, tagLine);
         return matchHistoryVO != null ? Result.ok(matchHistoryVO)  : Result.fail(ResultCode.FAIL);
+    }
+    @GetMapping("/test")
+    public Result test() {
+        playerService.currentPlayerRecord();
+        return null;
     }
 }

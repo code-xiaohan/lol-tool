@@ -1,5 +1,5 @@
 package org.lele.sdtahzl.constant;
 
 public class ServerConstant {
-    public static final String LOCAL_HOST = "http://127.0.0.1";
+    public static final String LOCAL_HOST = "https://127.0.0.1";
 }

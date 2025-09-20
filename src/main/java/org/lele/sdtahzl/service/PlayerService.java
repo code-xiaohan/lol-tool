@@ -2,55 +2,55 @@ package org.lele.sdtahzl.service;
 
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
-import org.lele.sdtahzl.domain.ClientDTO;
+import org.lele.sdtahzl.domain.PlayerAlias;
 import org.lele.sdtahzl.domain.SummonerInfo;
 import org.lele.sdtahzl.domain.vo.MatchHistoryVO;
-import org.lele.sdtahzl.util.HttpUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.lele.sdtahzl.util.LcuUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
 @Service
 public class PlayerService {
-    @Autowired
-    private ClientService clientService;
 
     private static final int begin = 0;
     private static final int end = 1000;
+    private final LcuUtil lcuUtil;
 
-    public MatchHistoryVO historyGameRecord(String summonerName) {
-        ClientDTO client = null;
-        try {
-            client = clientService.getClient();
-        } catch (Exception e) {
-            log.error("客户端初始化失败{}", e.getMessage());
-            return null;
-        }
+    public PlayerService(LcuUtil lcuUtil) {
+        this.lcuUtil = lcuUtil;
+    }
+
+    public MatchHistoryVO historyGameRecord(String gameName, String tagLine) {
 
         String puuid = null;
-        String puuidUrl = client.getPreUrl() + "/lol-summoner/v1/summoners";
-        String authorization = client.getAuthToken();
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization", authorization);
-        String body = String.format("{\"name\" : \"%s\"}", summonerName);
+        Map<String, String> params = new HashMap<>();
+        params.put("gameName", gameName);
+        params.put("tagLine", tagLine);
+        String url = "/lol-summoner/v1/alias/lookup";
         try {
-            String resp = HttpUtil.post(puuidUrl, body, headers);
-            SummonerInfo summonerInfo = JSON.parseObject(resp, SummonerInfo.class);
-            if (summonerInfo == null) {
+            String resp = LcuUtil.doGet(url, params);
+            PlayerAlias playerAlias = JSON.parseObject(resp, PlayerAlias.class);
+            if (playerAlias == null) {
                 return null;
             }
-            puuid = summonerInfo.getPuuid();
+            puuid = playerAlias.getPuuid();
         } catch (Exception e) {
             log.error("http get exception{}", e.getMessage(), e);
             return null;
         }
+        if (StringUtils.isEmpty(puuid)) {
+            log.error("http get puuid is null");
+            return null;
+        }
 
-        String matchUrl = client.getPreUrl() + "/lol-match-history/v1/products/lol/" + puuid + "/matches";
+        url = "/lol-match-history/v1/products/lol/" + puuid + "/matches";
         try {
-            String resp = HttpUtil.get(matchUrl, headers);
+            String resp = LcuUtil.doGet(url, null);
             MatchHistoryVO matchHistoryVO = JSON.parseObject(resp, MatchHistoryVO.class);
             if (matchHistoryVO == null) {
                 return null;
@@ -60,5 +60,17 @@ public class PlayerService {
             log.error("http get exception{}", e.getMessage(), e);
             return null;
         }
+    }
+
+    public MatchHistoryVO currentPlayerRecord() {
+        String url = "/lol-summoner/v1/current-summoner";
+        try {
+            String s = lcuUtil.doGet(url, null);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 }

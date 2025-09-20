@@ -1,4 +1,4 @@
-package org.lele.sdtahzl.service;
+package org.lele.sdtahzl.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.lele.sdtahzl.constant.ServerConstant;
@@ -11,10 +11,9 @@ import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Service
 @Slf4j
-public class ClientService {
-    private volatile ClientDTO clientDTO;
+public class ClientUtil {
+    private volatile static ClientDTO clientDTO;
     // 进程名称
     private static final String PROCESS_NAME = "LeagueClientUx";
 
@@ -24,7 +23,7 @@ public class ClientService {
     // 用于匹配认证令牌的正则表达式
     private static final Pattern TOKEN_PATTERN = Pattern.compile("--remoting-auth-token=([\\w-]*)");
 
-    private void initClient() throws Exception {
+    private static void initClient() throws Exception {
         try {
             // 获取操作系统类型
             String os = System.getProperty("os.name").toLowerCase();
@@ -122,9 +121,9 @@ public class ClientService {
     }
 
     //可能为空
-    public ClientDTO getClient() throws Exception {
+    public static ClientDTO getClient() throws Exception {
         if (clientDTO == null) {
-            synchronized (this) {
+            synchronized (ClientUtil.class) {
                 if (clientDTO == null) {
                     initClient();
                 }
