@@ -1,0 +1,3 @@
+spring.application:
+ name: lol-tool
+ api-key: RGAPI-d169c192-6bb9-4161-9350-a1f6fa8b0c63
