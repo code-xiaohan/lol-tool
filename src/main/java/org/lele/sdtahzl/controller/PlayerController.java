@@ -21,7 +21,7 @@ public class PlayerController {
             return Result.fail(ResultCode.PARAM_ERROR);
         }
         MatchHistoryVO matchHistoryVO = playerService.historyGameRecord(gameName, tagLine);
-        return matchHistoryVO != null ? Result.ok(matchHistoryVO)  : Result.fail(ResultCode.FAIL);
+        return matchHistoryVO != null ? Result.ok(matchHistoryVO) : Result.fail(ResultCode.FAIL);
     }
     @GetMapping("/test")
     public Result test() {

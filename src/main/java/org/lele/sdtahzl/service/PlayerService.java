@@ -50,6 +50,9 @@ public class PlayerService {
 
         url = "/lol-match-history/v1/products/lol/" + puuid + "/matches";
         try {
+            Map<String, String> param = new HashMap<>();
+            param.put("begIndex", "0");
+            param.put("endIndex", "100");
             String resp = LcuUtil.doGet(url, null);
             MatchHistoryVO matchHistoryVO = JSON.parseObject(resp, MatchHistoryVO.class);
             if (matchHistoryVO == null) {
