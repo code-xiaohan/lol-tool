@@ -7,9 +7,12 @@ public class Participant {
     private int participantId;
     private int teamId;
     private int championId;
-    private int spell1Id;
-    private int spell2Id;
+    private long spell1Id;
+    private long spell2Id;
+    private byte[] spell1Picture;
+    private byte[] spell2Picture;
     private String highestAchievedSeasonTier;
     private Stats stats;
     private Timeline timeline;
+    private byte[] championPicture;
 }

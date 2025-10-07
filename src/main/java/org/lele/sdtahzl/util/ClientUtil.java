@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.lele.sdtahzl.constant.ServerConstant;
 import org.lele.sdtahzl.domain.ClientDTO;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -50,6 +51,11 @@ public class ClientUtil {
             // 解析认证令牌
             String token = extractInfo(output, TOKEN_PATTERN);
             String preUrl = ServerConstant.LOCAL_HOST + ":" + port;
+
+            if (StringUtils.isEmpty(port) || StringUtils.isEmpty(token)) {
+                log.error("port or token is empty");
+                throw new Exception("port or token is empty");
+            }
 
             clientDTO = new ClientDTO();
             clientDTO.setPort(port);

@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class Stats {
-    // 太长，只列代表性字段，其余可自动生成
     private int participantId;
     private boolean win;
     private int item0;
@@ -20,5 +19,12 @@ public class Stats {
     private int goldEarned;
     private int champLevel;
     private int visionScore;
-    // … 其他字段省略，可按 JSON 一次性补全
+    private byte[] item0Picture;
+    private byte[] item1Picture;
+    private byte[] item2Picture;
+    private byte[] item3Picture;
+    private byte[] item4Picture;
+    private byte[] item5Picture;
+    private byte[] item6Picture;
+    private String totalDamageDealtToChampions;
 }

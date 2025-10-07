@@ -3,6 +3,7 @@ package org.lele.sdtahzl.util;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.net.ssl.*;
 import java.io.IOException;
@@ -66,6 +67,37 @@ public class HttpUtil {
     }
 
     /**
+     * 发送GET请求
+     *
+     * @param url 请求地址
+     * @param headers 请求头
+     * @return 响应内容 相应内容为二进制流
+     * @throws IOException
+     */
+    public static byte[] getByte(String url, Map<String, String> headers, Map<String, String> params) throws IOException {
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
+        if(!CollectionUtils.isEmpty(params)) {
+            params.forEach(urlBuilder::addQueryParameter);
+        }
+
+        Request.Builder requestBuilder = new Request.Builder();
+        requestBuilder.url(urlBuilder.build());
+
+        if (!CollectionUtils.isEmpty(headers)) {
+            headers.forEach(requestBuilder::addHeader);
+        }
+
+
+        Request request = requestBuilder.get().build();
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new IOException("Unexpected code " + response);
+            }
+            return response.body() != null ? response.body().bytes() : null;
+        }
+    }
+
+    /**
      * 发送POST请求 (JSON)
      *
      * @param url 请求地址
@@ -75,8 +107,14 @@ public class HttpUtil {
      * @throws IOException
      */
     public static String post(String url, String json, Map<String, String> headers) throws IOException {
-        RequestBody body = RequestBody.create(json, JSON);
-        Request.Builder builder = new Request.Builder().url(url).post(body);
+
+        Request.Builder builder;
+        if (!StringUtils.isEmpty(json)) {
+            RequestBody body = RequestBody.create(json, JSON);
+            builder = new Request.Builder().url(url).post(body);
+        } else {
+            builder = new Request.Builder().url(url);
+        }
 
         if (headers != null) {
             headers.forEach(builder::addHeader);
