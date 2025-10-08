@@ -4,12 +4,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.lele.sdtahzl.constant.ResultCode;
 import org.lele.sdtahzl.domain.Result;
 import org.lele.sdtahzl.domain.match.Game;
+import org.lele.sdtahzl.domain.match.GameSession;
+import org.lele.sdtahzl.domain.vo.CurrentMatchDetail;
 import org.lele.sdtahzl.domain.vo.MatchHistoryVO;
 import org.lele.sdtahzl.service.ChampionService;
+import org.lele.sdtahzl.service.GameService;
 import org.lele.sdtahzl.service.PlayerService;
 import org.lele.sdtahzl.util.LcuUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -20,6 +26,8 @@ public class PlayerController {
 
     @Autowired
     private ChampionService championService;
+    @Autowired
+    private GameService gameService;
 
     /**
      * 连接客户端， 获取LCU client
@@ -66,9 +74,18 @@ public class PlayerController {
         Game gameDetailRecord = playerService.gameDetailRecord(gameId);
         return gameDetailRecord != null ? Result.ok(gameDetailRecord) : Result.fail(ResultCode.FAIL);
     }
+
+    /**
+     * 获取当前对局信息
+     * @return 当前游戏的对局信息 包含玩家此次对局 和历史对局信息
+     */
+    public Result<List<CurrentMatchDetail>> getCurrentMatchDetail() {
+        return null;
+    }
+
     @GetMapping("/test")
     public Result test() throws Exception {
-        playerService.test();
+        gameService.getGameSession();
         return null;
     }
 }
