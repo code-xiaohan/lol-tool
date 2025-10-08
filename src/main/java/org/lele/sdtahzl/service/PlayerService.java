@@ -197,6 +197,18 @@ public class PlayerService {
                 try {
                     List<Game> games = gameService.getGames(puuid);
                     if (games != null) {
+                        games.stream().map(Game::getParticipants)
+                                .flatMap(Collection::stream)
+                                .map(participant -> {
+                                            int champtionId = participant.getChampionId();
+                                            byte[] championAvatar = championService.getChampionAvatar(champtionId);
+                                            participant.setChampionPicture(championAvatar);
+                                            championService.getItemList(participant.getStats());
+                                            championService.getPlayerSpells(participant);
+                                            return participant;
+                                        }
+                                )
+                                .toList();
                         vo.setGame(games.size() > 10 ? games.subList(0, 10) : games);
                     } else {
                         vo.setGame(Collections.emptyList());
