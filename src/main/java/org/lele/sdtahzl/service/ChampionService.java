@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.lele.sdtahzl.domain.item.Item;
 import org.lele.sdtahzl.domain.item.Spell;
 import org.lele.sdtahzl.domain.match.Participant;
+import org.lele.sdtahzl.domain.match.PlayerInfo;
 import org.lele.sdtahzl.domain.match.Stats;
 import org.lele.sdtahzl.util.LcuUtil;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,12 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class ChampionService {
+
+    private final LcuUtil lcuUtil;
+
+    public ChampionService(LcuUtil lcuUtil) {
+        this.lcuUtil = lcuUtil;
+    }
 
     /**
      * 获取英雄头像
@@ -61,13 +68,13 @@ public class ChampionService {
                 } else if (item3 == item.getId()) {
                     String itemUrl = item.getIconPath();
                     stats.setItem3Picture(LcuUtil.doGetByte(itemUrl, null));
-                }else if (item4 == item.getId()) {
+                } else if (item4 == item.getId()) {
                     String itemUrl = item.getIconPath();
                     stats.setItem4Picture(LcuUtil.doGetByte(itemUrl, null));
-                }else if (item5 == item.getId()) {
+                } else if (item5 == item.getId()) {
                     String itemUrl = item.getIconPath();
                     stats.setItem5Picture(LcuUtil.doGetByte(itemUrl, null));
-                }else if (item6 == item.getId()) {
+                } else if (item6 == item.getId()) {
                     String itemUrl = item.getIconPath();
                     stats.setItem6Picture(LcuUtil.doGetByte(itemUrl, null));
                 }
@@ -106,9 +113,24 @@ public class ChampionService {
     }
 
     /**
-     *
+     * 获取召唤师技能图标
      */
-
-
-
+    public byte[] getSpellPicture(int spellId) {
+        try {
+            String url = "/lol-game-data/assets/v1/summoner-spells.json";
+            String result = LcuUtil.doGet(url, null);
+            List<Spell> spells = JSON.parseArray(result, Spell.class);
+            for (int i = 0; i < spells.size(); i++) {
+                Spell spell = spells.get(i);
+                if (spellId == spell.getId()) {
+                    String spellUrl = spell.getIconPath();
+                    byte[] bytes = LcuUtil.doGetByte(spellUrl, null);
+                    return bytes;
+                }
+            }
+        } catch (Exception e) {
+            log.error("get player spells error", e);
+        }
+        return null;
+    }
 }

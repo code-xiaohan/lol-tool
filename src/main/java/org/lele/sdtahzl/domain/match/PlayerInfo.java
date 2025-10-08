@@ -3,7 +3,7 @@ package org.lele.sdtahzl.domain.match;
 import lombok.Data;
 
 @Data
-public class Player {
+public class PlayerInfo {
     private String puuid;
     private String platformId;
     private long accountId;

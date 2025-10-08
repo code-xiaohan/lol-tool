@@ -5,7 +5,7 @@ import org.lele.sdtahzl.constant.ResultCode;
 import org.lele.sdtahzl.domain.Result;
 import org.lele.sdtahzl.domain.match.Game;
 import org.lele.sdtahzl.domain.match.GameSession;
-import org.lele.sdtahzl.domain.vo.CurrentMatchDetail;
+import org.lele.sdtahzl.domain.vo.CurrentMatchDetailVO;
 import org.lele.sdtahzl.domain.vo.MatchHistoryVO;
 import org.lele.sdtahzl.service.ChampionService;
 import org.lele.sdtahzl.service.GameService;
@@ -79,8 +79,10 @@ public class PlayerController {
      * 获取当前对局信息
      * @return 当前游戏的对局信息 包含玩家此次对局 和历史对局信息
      */
-    public Result<List<CurrentMatchDetail>> getCurrentMatchDetail() {
-        return null;
+    @GetMapping("/current/match/details")
+    public Result<List<CurrentMatchDetailVO>> getCurrentMatchDetail() {
+        List<CurrentMatchDetailVO> currentMatchDetail = playerService.getCurrentMatchDetail();
+        return currentMatchDetail != null ? Result.ok(currentMatchDetail) : Result.fail(ResultCode.FAIL);
     }
 
     @GetMapping("/test")
